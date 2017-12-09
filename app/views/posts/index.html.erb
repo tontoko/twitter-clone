@@ -1,0 +1,118 @@
+    <div class="body">
+      <div class="container">
+        <div class="body-left">
+          <div class="body-userInfo-wrapper">
+            <div class="body-userInfo-top">
+              <div class="bodyLeft-userIcon">
+              <% if @user.profil_img %>
+              <%= image_tag "/images/profil_images/#{session[:user_id]}.jpg" %>
+              <% else %>
+              <%= image_tag '/images/profil_images/default.jpg' %>
+              <% end %>
+              </div>
+            </div>
+            <div class="body-userInfo-bottom">
+              <div class="body-userName-wrapper">
+              <div class="body-userNameUserId">
+                <p class="body-userName"><%= @user.name %> <%= @testContent %></p>
+              </br>
+                <p class="body-userId">@<%= @user.user_id %></p>
+              </div>
+              </div>
+              <div class="body-userInfo">
+                <div class="body-teetsMyself">
+                  <p class="userInfo-top">ツイート</p>
+                  <p class="userInfo-bottom">5,000</p>
+                </div>
+                <div class="body-followsMyself">
+                  <p class="userInfo-top">フォロー</p>
+                  <p class="userInfo-bottom">100</p>
+                </div><div class="body-followersMyself">
+                  <p class="userInfo-top">フォロワー</p>
+                  <p class="userInfo-bottom">100</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="body-requestFollow">
+            <div class="requestFollow-btn">
+              <p>〇〇件の新しいフォローリクエスト</p>
+            </div>
+          </div>
+        </div>
+        
+        
+        <div class="body-center">
+          <div class="body-newTweet">
+            <div class="bodyCenter-userIcon">
+              <% if @user.profil_img %>
+              <%= image_tag "/images/profil_images/#{session[:user_id]}.jpg" %>
+              <% else %>
+              <%= image_tag '/images/profil_images/default.jpg' %>
+              <% end %>
+            </div>
+            <div class="newTweet-container">
+              <%= form_tag('/posts/newTweet', method: :post, multipart: true) do %>
+              <input class="body-tweet-input" type="text" name="content" value="" placeholder="いまどうしてる？">
+              <label class="picture-add">
+                <i class="fa fa-picture-o"></i>
+                <input type="file" accept="image/jpeg" name="img" style="display:none">
+              </label>
+              <div class="preview"></div>
+              <input class="body-tweet-btn" type="submit" name="" value="ツイート">
+              <% end %>
+            </div>
+            <div class="clear"></div>
+          </div>
+          
+          
+          <% @posts.each do |post| %>
+          <% time = ((Time.now - Time.parse(post.updated_at.to_s)) / (24 * 60)).floor
+                if time >= 24
+                  time = "#{(time / 24).floor}日前"
+                else
+                  time = "#{time}時間前"
+                end
+          %>
+          <% user = User.find_by(user_id: post.user_id) %>
+          <div class="body-tweets" data-toggle="modal" data-target="#tweet-detail" data-post-id="<%= post.id %>" data-user_id="<%= post.user_id %>" data-content="<%= post.content %>" data-post-img="<%= post.img %>" data-time="<%= time %>" data-user-name="<%= user.name %>" data-user-img="<%= user.profil_img %>">
+            <div class="bodyTweets-userIcon">
+              <% if user.profil_img %>
+              <%= image_tag "/images/profil_images/#{user.user_id}.jpg" %>
+              <% else %>
+              <%= image_tag '/images/profil_images/default.jpg' %>
+              <% end %>
+            </div>
+            <div class="bodyTweets-contents">
+              <div class="bodyTweets-top">
+                <p class="bodyTweets-user"><%= user.name %> </p><p class="bodyTweets-idTime">@<%= user.user_id %>- <%= time %></p>
+              </div>
+              <div class="bodyTweets-bottom">
+                <p><%= post.content %></p>
+                <%= image_tag "/images/user_images/test/#{post.img}" if post.img != nil %>
+                <div class="bodyTweets-btns">
+                  <div class="bodyTweets-btn comment">
+                    <i class="fa fa-comment-o" aria-hidden="true"></i>
+                  </div>
+                  <div class="bodyTweets-btn retweet">
+                    <i class="fa fa-retweet" aria-hidden="true"></i>
+                  </div>
+                  <div class="bodyTweets-btn like <%= "liked" unless Like.where(post: post.id).find_by(user: session[:user_id]).blank? %>">
+                    <i class="fa fa-heart-o" aria-hidden="true"></i>
+                  </div>
+                  <div class="bodyTweets-btn tweet-message">
+                    <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="clear"></div>
+          </div>
+          <% end %>
+        </div>
+      </div>
+      
+      
+      
+      
+    </div>

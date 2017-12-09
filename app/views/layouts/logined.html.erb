@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Twitter</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body class='posts'>
+  <header>
+      <div class="container">
+        <div class="header-left">
+          <ul>
+            <li class="header-menu home"><i class="fa fa-home"></i><p>ホーム</p></li>
+            <li class="header-menu alert"><i class="fa fa-bell"></i><p>通知</p></li>
+            <li class="message"><i class="fa fa-envelope-o"></i><p>メッセージ</p></li>
+          </ul>
+        </div>
+        <div class="logo">
+          <span class="fa fa-twitter"></span>
+        </div>
+        <div class="header-right">
+            <div class="search-form">
+                <input class="search-text" type="text" name="" placeholder="キーワード検索">
+                <span class="fa fa-search"></span>
+                <input class="search-submit" type="submit" name="" value="">
+            </div>
+            <div class="btn-group">
+              <div class="header-userIcon btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <% if @user.profil_img %>
+                <%= image_tag "/images/profil_images/#{session[:user_id]}.jpg" %>
+                <% else %>
+                <%= image_tag '/images/profil_images/default.jpg' %>
+                <% end %>
+              </div>
+              <ul class="dropdown-menu dropdown-menu-right" role="menu">
+      	    	  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">リンクのリスト１</a></li>
+    	    	    <li role="presentation"><%= link_to "設定", posts_user_details_path %></li>
+        	    	<li role="presentation"><%= link_to "ログアウト", users_logout_path, data: {:confirm => "本当にログアウトしますか？"}, method: "post" %></li>
+	            </ul>
+            </div>
+            <div class="tweet-btn" data-toggle="modal" data-target="#modal-new-tweet">ツイート</div>
+        </div>
+      </div>
+    </header>
+    
+    <div class="header-fix-padding-top"></div>
+
+
+  <div class="top-message">
+    <% flash.each do |key, value| %>
+    <%= content_tag(:div, value, class: "#{key}") %>
+    <% end %>
+  
+    <% if @user != nil && @user.errors.any? %>
+      <ul>
+        <% @user.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    <% end %>
+    
+    <% if @post != nil && @post.errors.any? %>
+      <ul>
+        <% @post.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    <% end %>
+  </div>
+    
+<%= yield %>
+
+<div class="modal" id="tweet-detail" data-post-id="">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="dropdown-btn-wrapper">
+          <div class="dropdown">
+    	      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+          	  <span class="caret"></span>
+          	</button>
+          	<ul class="dropdown-menu dropdown-menu-right" role="menu">
+           		<li role="presentation"><a href="#">リンクのリスト１</a></li>
+          		<li role="presentation"><a id="destroy">ツイートを削除</a></li>
+           	</ul>
+          </div>
+        </div>
+        <div class="bodyTweets-userIcon">
+          <img id="modal-profilImg" src=""></img>
+        </div>
+        <div class="bodyTweets-contents">
+          <div class="bodyTweets-top">
+            <p class="bodyTweets-user">user</p><p class="bodyTweets-idTime">time</p>
+          </div>
+          <div class="bodyTweets-bottom">
+            <p>content</p>
+            <div class="modal-img"></div>
+            <div class="bodyTweets-btns">
+              <div class="bodyTweets-btn comment">
+                <i class="fa fa-comment-o" aria-hidden="true"></i>
+              </div>
+              <div class="bodyTweets-btn retweet">
+                <i class="fa fa-retweet" aria-hidden="true"></i>
+              </div>
+              <div class="bodyTweets-btn like">
+                <i class="fa fa-heart-o" aria-hidden="true"></i>
+              </div>
+              <div class="bodyTweets-btn tweet-message">
+                <i class="fa fa-envelope-o" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-new-tweet">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header"><h4>ツイートする</h4></div>
+      <div class="modal-body">
+        <div class="body-newTweet">
+          <div class="bodyCenter-userIcon">
+            <% if @user.profil_img %>
+              <%= image_tag "/images/profil_images/#{session[:user_id]}.jpg" %>
+            <% else %>
+              <%= image_tag '/images/profil_images/default.jpg' %>
+            <% end %>
+          </div>
+          <div class="newTweet-container">
+            <%= form_tag('/posts/newTweet', method: :post, multipart: true) do %>
+            <input class="body-tweet-input" type="text" name="content" value="" placeholder="いまどうしてる？">
+            <label class="picture-add">
+              <i class="fa fa-picture-o"></i>
+              <input type="file" accept="image/*" name="img" style="display:none">
+            </label>
+            <div class="preview"></div>
+            <input class="body-tweet-btn" type="submit" name="" value="ツイート">
+            <% end %>
+          </div>
+          <div class="clear"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

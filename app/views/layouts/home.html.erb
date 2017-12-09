@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Twitter</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body class="users">
+<header>
+      <div class="container">
+        <div class="header-left">
+          <ul>
+              <li class="header-menu"><i class="fa fa-twitter"></i><p>ホーム</p></li>
+              <li class="header-menu"><p>Twitterについて</p></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    
+  <div class="header-fix-padding-top"></div>
+    
+    
+  <div class="top-message">
+    <% flash.each do |key, value| %>
+    <%= content_tag(:div, value, class: "#{key}") %>
+    <% end %>
+  
+    <% if @user != nil && @user.errors.any? %>
+      <ul>
+        <% @user.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    <% end %>
+  </div>
+  
+    
+<%= yield %>
+
+</body>
+</html>

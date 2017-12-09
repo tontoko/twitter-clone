@@ -1,0 +1,6 @@
+# config/locales/ja.yml
+ja:
+  name: 名前
+  user_id: ユーザー名
+  User: ユーザー
+  Password: パスワード

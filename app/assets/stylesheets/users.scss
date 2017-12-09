@@ -1,0 +1,122 @@
+.users {
+
+.body {
+    padding-top: 50px;
+    height: 100%;
+    width: 100%;
+    background-image: image-url("cats-eyes-2671903_1920.jpg");
+    background-size: cover;
+}
+
+.body-card {
+    height: 410px;
+    margin-top: 100px;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.body-left {
+    width: 50%;
+    float: left;
+}
+
+h2, h3 {
+    color: white;
+    font-weight: bold
+}
+
+.body-right {
+    width: 300px;
+    display: flex;
+    flex-flow: column nowrap; 
+    float: right;
+}
+
+.login-form {
+    background: white;
+    height: 100px;
+    width: 100%;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signup-wrapper {
+    height: 200px;
+    width: 100%;
+    background: white;
+}
+
+.signup-title {
+    border-bottom: 1px solid #e6ecf0;
+    display: flex;
+    align-items: center;
+    hegiht: 70px;
+    margin-bottom: 5px;
+}
+
+.signup-title h4 {
+    padding-left: 5%;
+    font-weight: bold;
+}
+
+.signup-form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.signup-form form {
+    width: 90%;
+    text-align: right;
+}
+
+.signup-form input {
+    width: 100%;
+    height: 30px;
+    margin-top: 5px;
+}
+
+.signup-form input[type="submit"] {
+    width: 50%;
+    height: 36px;
+    border-radius: 10px;
+    background: #1da1f2;
+    border: 1px solid #1da1f2;
+    border-radius: 25px;
+    color: white;
+    cursor: pointer;
+}
+
+.login-form form {
+    width: 90%;
+}
+
+.login-form input {
+    width: 100%;
+    margin-top: 5px;
+    height: 30px;
+}
+
+.password-submit input[type="password"] {
+    width: 60%;
+    display: inline-block;
+}
+
+.password-submit input[type="submit"] {
+    display: inline-block;
+    margin-left: 3%;
+    width: 35%;
+    border: 1px solid #1da1f2;
+    color: #1da1f2;
+    background: white;
+    border-radius: 25px;
+    font-weight: bold;
+}
+
+
+
+
+
+}

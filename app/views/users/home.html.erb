@@ -1,0 +1,36 @@
+<% @user = User.new unless @user %>
+
+<div class="body">
+    <div class="container">
+        <div class="body-card">
+            <div class="body-left">
+                <h2>Twitterへようこそ</h1>
+                <h3>「いま」起きていることを見つけよう。国内のニュースから身近なできごとまで、みんなの話題がわかる。</h2>
+            </div>
+            <div class="body-right">
+                <div class="login-form">
+                    <%= form_for @user, :url => { :controller => :users, :action => :login }, :method => "post" do |f| %>
+                        <%= f.text_field :user_id, :placeholder => "ユーザーID" %>
+                        <div class="password-submit">
+                            <%= f.password_field :password, :placeholder => "パスワード", html: {class: "logIn-password"} %>
+                            <%= f.submit "ログイン" %>
+                        </div>
+                    <% end %>
+                </div>
+                <div class="signup-wrapper">
+                    <div class="signup-title">
+                        <h4>Twitterを使ってみよう</h4>
+                    </div>
+                    <div class="signup-form">
+                        <%= form_for @user, :url => { :controler => :users, :action => :create }, :method => "post" do |f| %>
+                            <%= f.text_field :name, :placeholder => "名前 (またはニックネーム)" %>
+                            <%= f.text_field :user_id, :placeholder => "ユーザーID" %>
+                            <%= f.password_field :password, :placeholder => "パスワード" %>
+                            <%= f.submit "アカウント作成" %>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
