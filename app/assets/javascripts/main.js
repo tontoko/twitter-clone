@@ -1,14 +1,14 @@
 $(document).on('turbolinks:load', function() {
 	
-	var tweet
-	var user_id
-	var content
-	var time
-	var modal
-	var postId
-	var postImg
-	var userName
-	var userImg
+	let tweet
+	let user_id
+	let content
+	let time
+	let modal
+	let postId
+	let postImg
+	let userName
+	let userImg
 	
 	
     $(".home").on('click', function() {
@@ -17,11 +17,6 @@ $(document).on('turbolinks:load', function() {
     
     
     $(".comment").on("click", function(e) {
-    	alert("test");
-    	e.stopPropagation();
-    });
-    
-    $(".retweet").on("click", function(e) {
     	alert("test");
     	e.stopPropagation();
     });
@@ -36,6 +31,7 @@ $(document).on('turbolinks:load', function() {
     	$.ajax({
 			url: "/posts/like",
 			method: "POST",
+			cache: false,
 			data: {postId: postId}
 		});
     	
@@ -46,49 +42,99 @@ $(document).on('turbolinks:load', function() {
 		}
     });
     
+    $(".retweet").on("click", function(e) {
+		e.stopPropagation();
+		if (!tweet) {
+			tweet = $(this).parents(".body-tweets")
+		}
+    	postId = tweet.data('post-id');
+    	
+    	$.ajax({
+			url: "/posts/retweet",
+			method: "POST",
+			cache: false,
+			data: {postId: postId}
+		});
+    	
+    	$(this).toggleClass("retweeted");
+    	
+    	if ($("#tweet-detail").css("display") !== "none") {
+			tweet.find(".retweet").toggleClass("retweeted");
+		}
+    });
+    
     $(".tweet-message").on("click", function(e) {
     	alert("test");
     	e.stopPropagation();
     });
     
+    $(document).on("click", ".follow-btn", function(e) {
+    	e.stopPropagation();
+    	$(this).toggleClass('followed');
+    	if ($(this).attr("class") == "followed") {
+    		$(this).attr("value", "アンフォロー");
+    	}else {
+    		$(this).attr("value", "フォロー");
+    	}
+    	let user = $(this).attr("data-user")
+    	$.ajax({
+    		url: "/users/follow", 
+    		method: "POST", 
+    		cache: false,
+    		data: {userId: user},
+    		error:function() {
+        		//取得失敗時に実行する処理
+        		console.log("何らかの理由で失敗しました");
+    		}
+    	});
+    });
     
-    $("#tweet-detail").on('show.bs.modal', function (e) {
-		tweet = $(e.relatedTarget);
-		user_id = tweet.data('user_id');
-		content = tweet.data('content');
-		time = tweet.data('time');
-		modal = $(this);
-		postId = tweet.data('post-id');
-		postImg = tweet.data('post-img');
-		userName = tweet.data('user-name');
-		userImg = tweet.data('user-img');
-		tweet.attr("data-post-id", postId);
-		modal.find(".bodyTweets-top").children(".bodyTweets-user").text(userName);
-		modal.find(".bodyTweets-top").children(".bodyTweets-idTime").text("@" + user_id + "- " + time);
-		modal.find(".bodyTweets-bottom").children("p").text(content);
-		modal.find(".bodyTweets-bottom img").remove();
-		if (postImg) {
-			let post_image = '<img src="/images/user_images/srcUser/srcImg">'.replace("srcImg", postImg).replace("srcUser", user_id);
-			modal.find(".modal-img").append(post_image);
-		}
-		if (userImg == true) {
-			modal.find("#modal-profilImg").attr('src', "/images/profil_images/" + user_id + ".jpg");
-		}else {
-			modal.find("#modal-profilImg").attr('src', "/images/profil_images/default.jpg");
-		}
-		if (tweet.find(".liked").length) {
-			modal.find(".like").addClass("liked");
-		}else {
-			modal.find(".like").removeClass("liked");
-		}
+    $(".body-tweets").on('click', function (e) {
+    	if ($(this).find(".popover-content").length == 0) {
+			tweet = $(this);
+			user_id = tweet.data('user_id');
+			content = tweet.data('content');
+			time = tweet.data('time');
+			modal = $('#tweet-detail');
+			postId = tweet.data('post-id');
+			postImg = tweet.data('post-img');
+			userName = tweet.data('user-name');
+			userImg = tweet.data('user-img');
+			modal.attr("data-post-id", postId);
+			modal.find(".bodyTweets-top").children(".bodyTweets-user").text(userName);	
+			modal.find(".bodyTweets-top").children(".bodyTweets-idTime").text("@" + user_id + "- " + time);
+			modal.find(".bodyTweets-bottom").children("p").text(content);
+			modal.find(".bodyTweets-bottom img").remove();
+			if (postImg) {
+				let post_image = '<img src="/images/user_images/srcUser/srcImg">'.replace("srcImg", postImg).replace("srcUser", user_id);
+				modal.find(".modal-img").append(post_image);
+			}
+			if (userImg == true) {
+				modal.find("#modal-profilImg").attr('src', "/images/profil_images/" + user_id + ".jpg");
+			}else {
+				modal.find("#modal-profilImg").attr('src', "/images/profil_images/default.jpg");
+			}
+			if (tweet.find(".liked").length) {
+				modal.find(".like").addClass("liked");
+			}else {
+				modal.find(".like").removeClass("liked");
+			}
+			if (tweet.find(".retweeted").length) {
+				modal.find(".retweet").addClass("retweeted");
+			}else {
+				modal.find(".retweet").removeClass("retweeted");
+			}
+		$("#tweet-detail").modal();
+    	}
 	});
 	
 	$("#destroy").on('click', function() {
-		let id = $("#tweet-detail").attr("data-id");
+		let id = $("#tweet-detail").attr("data-post-id");
 		
 		$.ajax({
 			url: "/posts/destroyTweet",
 			method: "POST",
+			cache: false,
 			data: {postId: id}
 		});
 	});
@@ -140,6 +186,35 @@ $(document).on('turbolinks:load', function() {
 		$(".preview").empty();
 		$('input[type="file"]').val('');
 	});
+	
+	let hoge
+	let popover_show
+	let element
+
+	$('.popover-user-details').popover({
+		trigger: 'manual',
+		html: true
+	});
+	$(document).on('mouseenter', '.popover-user-details, .popover-content', function() {
+		clearTimeout(hoge);
+		if (popover_show == true) {
+			return false
+		}
+		element = $(this)
+		hoge = setTimeout(function() {			
+			popover_show = true;
+			element.popover('show');
+		}, 500); 
+	});
+	
+	$(document).on('mouseleave', '.popover-user-details, .popover-content', function() {
+		clearTimeout(hoge);
+		hoge = setTimeout(function() {
+			popover_show = false;
+			element.popover('hide');
+		}, 500);
+	});
+
 	
 			
 });

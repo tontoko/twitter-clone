@@ -22,21 +22,25 @@
   <div class="header-fix-padding-top"></div>
     
     
-  <div class="top-message">
-    <% flash.each do |key, value| %>
-    <%= content_tag(:div, value, class: "#{key}") %>
-    <% end %>
-  
-    <% if @user != nil && @user.errors.any? %>
-      <ul>
-        <% @user.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
+    <div class="top-message">
+      <% flash.each do |k, v| %>
+        <% @messages.push(v) %>
       <% end %>
-      </ul>
-    <% end %>
-  </div>
+      <% if @user != nil && @user.errors.any? %>
+        <% @user.errors.full_messages.each do |msg| %>
+          <% @messages.push(msg) %>
+        <% end %>
+      <% end %>
+      <% if @post != nil && @post.errors.any? %>
+        <% @post.errors.full_messages.each do |msg| %>
+          <% @messages.push(msg) %>
+        <% end %>
+      <% end %>
+      <% if @messages != nil && @messages.any? %>
+        <%= render partial: "posts/message", locals: {messages: @messages} %>
+      <% end %>
+    </div>
   
-    
 <%= yield %>
 
 </body>

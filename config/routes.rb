@@ -10,8 +10,12 @@ Rails.application.routes.draw do
   post "users/logout"
   post "users/update"
   post "users/destroy"
+  post "users/follow"
+  
   post 'posts/newTweet'
   post "posts/destroyTweet"
   post "posts/like"
+  post "posts/retweet"
+  
 
 end

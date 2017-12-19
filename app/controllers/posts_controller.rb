@@ -2,12 +2,18 @@ class PostsController < ApplicationController
   layout 'logined'
   
   before_action :check_login
+  before_action :clear_messages
   
   def index
     @posts = Post.all
     @users = User.all
     @user = User.find_by(user_id: session[:user_id])
-
+    @follower = Follow.where(follower: @user.id)
+    @followed = Follow.where(followed: @user.id)
+    @follower_id = []
+    @follower.each do |u|
+      @follower_id.push(User.find(u.followed).user_id)
+    end
   end
   
   def newTweet
@@ -27,8 +33,12 @@ class PostsController < ApplicationController
   
   def destroyTweet
     id = params[:postId]
-    if @post = Post.find_by({id: id})
+    if @post = Post.find_by(id: id)
       @post.destroy
+      redirect_to('/posts/index')
+    else
+      flash[:notice] = "エラーが発生しました！"
+      flash[:notice] = "id = #{id}"
       redirect_to('/posts/index')
     end
   end
@@ -37,14 +47,17 @@ class PostsController < ApplicationController
       @posts = Post.all
       @users = User.all
       @user = User.find_by(user_id: session[:user_id])
+      @follower = Follow.where(follower: @user.id)
+      @followed = Follow.where(followed: @user.id)
    end
    
    def like
       postId = params[:postId]
-      @like = Like.where(user: session[:user_id]).find_by(post: postId)
+      user = User.find_by(user_id: session[:user_id])
+      @like = Like.where(user_id: user.id).find_by(post_id: postId)
       
       if @like == nil
-        Like.create(user: session[:user_id], post: postId)
+        Like.create(user_id: user.id, post_id: postId)
       else
         @like.destroy
       end
@@ -52,6 +65,20 @@ class PostsController < ApplicationController
      render :nothing => true
    end
    
+   def retweet
+     postId = params[:postId]
+     user = User.find_by(user_id: session[:user_id])
+
+      @retweet = Retweet.where(user_id: user.id).find_by(post_id: postId)
+      
+      if @retweet == nil
+        Retweet.create(user_id: user.id, post_id: postId)
+      else
+        @retweet.destroy
+      end
+     
+     render :nothing => true
+     
+   end
    
-  
 end

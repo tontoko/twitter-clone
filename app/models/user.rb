@@ -6,5 +6,8 @@ class User < ActiveRecord::Base
     has_secure_password
     
     has_many :likes, dependent: :destroy
+    has_many :posts, dependent: :destroy
+    has_many :retweets, dependent: :destroy
+    has_many :follows, dependent: :destroy
     
 end

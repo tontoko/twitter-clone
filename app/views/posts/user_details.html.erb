@@ -18,25 +18,20 @@
                         <p class="body-userId">@<%= @user.user_id %></p>
                     </div>
                 </div>
-                    <div class="body-userInfo">
-                        <div class="body-teetsMyself">
+                <div class="body-userInfo">
+                    <div class="body-tweetsMyself">
                         <p class="userInfo-top">ツイート</p>
-                        <p class="userInfo-bottom">5,000</p>
+                        <p class="userInfo-bottom"><%= Post.where(user_id: @user.user_id).length %></p>
                     </div>
                     <div class="body-followsMyself">
                         <p class="userInfo-top">フォロー</p>
-                        <p class="userInfo-bottom">100</p>
+                        <p class="userInfo-bottom"><%= @follower.length %></p>
                     </div>
                     <div class="body-followersMyself">
                         <p class="userInfo-top">フォロワー</p>
-                        <p class="erInfo-bottom">100</p>
+                        <p class="userInfo-bottom"><%= @followed.length %></p>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="body-requestFollow">
-            <div class="requestFollow-btn">
-                <p>〇〇件の新しいフォローリクエスト</p>
             </div>
         </div>
     </div>

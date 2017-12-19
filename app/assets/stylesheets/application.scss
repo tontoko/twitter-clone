@@ -1,6 +1,7 @@
 
 /* 
 *= require_self
+*= require toastr
 *= require_tree .
 */
 
@@ -105,10 +106,6 @@ header {
 }
 
 .top-message {
-  text-align: center;
-  font-weight: bold;
-  color: red;
-  background: white;
 }
 
 .header-fix-padding-top {
@@ -116,12 +113,25 @@ header {
 }
 
 .like {
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
 .liked {
   color: red;
 }
+
+.retweet {
+  transition: 0.3s;
+}
+
+.retweeted {
+  color: rgb(0, 180, 0);
+}
+
+.popover {
+  width: 500px; /* この数字を変える */
+}
+
 
 
 // ---------------------------------------------------------

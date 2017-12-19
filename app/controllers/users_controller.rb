@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
     layout "home"
     
+    before_action :clear_messages
 
     def home
         
@@ -73,6 +74,29 @@ class UsersController < ApplicationController
         destroy_posts.destroy_all
         @user.destroy
         redirect_to("/")
+     end
+     
+     
+     def follow
+        user = User.find_by(user_id: session[:user_id])
+        userId = params[:userId]
+        
+        if user.id == userId
+            reset_session
+            flash[:notice] = "エラーが発生しました"
+            redirect_to("/")
+        end
+        
+        follow = Follow.where(follower: user.id).find_by(followed: userId)
+        
+        if follow == nil
+            Follow.create(follower: user.id, followed: userId)
+        else
+            follow.destroy
+        end
+     
+        render :nothing => true
+         
      end
      
      

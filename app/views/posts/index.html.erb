@@ -14,29 +14,25 @@
             <div class="body-userInfo-bottom">
               <div class="body-userName-wrapper">
               <div class="body-userNameUserId">
-                <p class="body-userName"><%= @user.name %> <%= @testContent %></p>
+                <p class="body-userName"><%= @user.name %></p>
               </br>
                 <p class="body-userId">@<%= @user.user_id %></p>
               </div>
               </div>
               <div class="body-userInfo">
-                <div class="body-teetsMyself">
+                <div class="body-tweetsMyself">
                   <p class="userInfo-top">ツイート</p>
-                  <p class="userInfo-bottom">5,000</p>
+                  <p class="userInfo-bottom"><%= Post.where(user_id: @user.user_id).length %></p>
                 </div>
                 <div class="body-followsMyself">
                   <p class="userInfo-top">フォロー</p>
-                  <p class="userInfo-bottom">100</p>
-                </div><div class="body-followersMyself">
+                  <p class="userInfo-bottom"><%= @follower.length %></p>
+                </div>
+                <div class="body-followersMyself">
                   <p class="userInfo-top">フォロワー</p>
-                  <p class="userInfo-bottom">100</p>
+                  <p class="userInfo-bottom"><%= @followed.length %></p>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="body-requestFollow">
-            <div class="requestFollow-btn">
-              <p>〇〇件の新しいフォローリクエスト</p>
             </div>
           </div>
         </div>
@@ -65,8 +61,10 @@
             <div class="clear"></div>
           </div>
           
-          
           <% @posts.each do |post| %>
+          
+          <% next unless @follower_id.include?(post.user_id) %>
+          
           <% time = ((Time.now - Time.parse(post.updated_at.to_s)) / (24 * 60)).floor
                 if time >= 24
                   time = "#{(time / 24).floor}日前"
@@ -75,12 +73,22 @@
                 end
           %>
           <% user = User.find_by(user_id: post.user_id) %>
-          <div class="body-tweets" data-toggle="modal" data-target="#tweet-detail" data-post-id="<%= post.id %>" data-user_id="<%= post.user_id %>" data-content="<%= post.content %>" data-post-img="<%= post.img %>" data-time="<%= time %>" data-user-name="<%= user.name %>" data-user-img="<%= user.profil_img %>">
-            <div class="bodyTweets-userIcon">
+          
+          <% unless Follow.where(follower: @user.id).find_by(followed: user.id).blank? %>
+            <% text = 'アンフォロー' %>
+            <% followed = true %>
+          <% else %>
+            <% text = 'フォロー' %>
+            <% followed = false %>
+          <% end %> 
+          
+          <div class="body-tweets" data-post-id="<%= post.id %>" data-user_id="<%= post.user_id %>" data-content="<%= post.content %>" data-post-img="<%= post.img %>" data-time="<%= time %>" data-user-name="<%= user.name %>" data-user-img="<%= user.profil_img %>">
+           
+            <div class="bodyTweets-userIcon popover-user-details" data-toggle="popover" data-placement="bottom" data-content="<%= render partial: 'user_popover', locals: { user: User.find_by(user_id: post.user_id), text: text, followed: followed } %>">
               <% if user.profil_img %>
-              <%= image_tag "/images/profil_images/#{user.user_id}.jpg" %>
+                <%= image_tag "/images/profil_images/#{user.user_id}.jpg" %>
               <% else %>
-              <%= image_tag '/images/profil_images/default.jpg' %>
+                <%= image_tag '/images/profil_images/default.jpg' %>
               <% end %>
             </div>
             <div class="bodyTweets-contents">
@@ -94,11 +102,11 @@
                   <div class="bodyTweets-btn comment">
                     <i class="fa fa-comment-o" aria-hidden="true"></i>
                   </div>
-                  <div class="bodyTweets-btn retweet">
+                  <div class="bodyTweets-btn retweet <%= "retweeted" unless Retweet.where(post_id: post.id).find_by(user_id: @user.id).blank? %>">
                     <i class="fa fa-retweet" aria-hidden="true"></i>
                   </div>
-                  <div class="bodyTweets-btn like <%= "liked" unless Like.where(post: post.id).find_by(user: session[:user_id]).blank? %>">
-                    <i class="fa fa-heart-o" aria-hidden="true"></i>
+                  <div class="bodyTweets-btn like <%= "liked" unless Like.where(post_id: post.id).find_by(user_id: @user.id).blank? %>">
+                    <i class="fa fa-heart" aria-hidden="true"></i>
                   </div>
                   <div class="bodyTweets-btn tweet-message">
                     <i class="fa fa-envelope-o" aria-hidden="true"></i>
@@ -111,8 +119,5 @@
           <% end %>
         </div>
       </div>
-      
-      
-      
       
     </div>

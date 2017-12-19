@@ -12,4 +12,8 @@ class ApplicationController < ActionController::Base
         redirect_to("/")
       end
     end
+    
+    def clear_messages
+      @messages = []
+    end
 end
