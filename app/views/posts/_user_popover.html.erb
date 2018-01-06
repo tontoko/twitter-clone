@@ -1,11 +1,4 @@
 <div class='body-userInfo-wrapper'>
-  <% unless Follow.where(follower: @user.id).find_by(followed: user.id).blank? %>
-    <% text = 'アンフォロー' %>
-    <% followed = true %>
-  <% else %>
-    <% text = 'フォロー' %>
-    <% followed = false %>
-  <% end %> 
   <div class='body-userInfo-top'>
     <div class='bodyLeft-userIcon'>
       <% if user.profil_img %>

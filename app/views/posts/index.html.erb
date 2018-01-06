@@ -63,7 +63,7 @@
           
           <% @posts.each do |post| %>
           
-          <% next unless @follower_id.include?(post.user_id) %>
+          <% next if @follower_id.include?(post.user_id) == false && post.user_id != @user.user_id %>
           
           <% time = ((Time.now - Time.parse(post.updated_at.to_s)) / (24 * 60)).floor
                 if time >= 24
@@ -84,7 +84,7 @@
           
           <div class="body-tweets" data-post-id="<%= post.id %>" data-user_id="<%= post.user_id %>" data-content="<%= post.content %>" data-post-img="<%= post.img %>" data-time="<%= time %>" data-user-name="<%= user.name %>" data-user-img="<%= user.profil_img %>">
            
-            <div class="bodyTweets-userIcon popover-user-details" data-toggle="popover" data-placement="bottom" data-content="<%= render partial: 'user_popover', locals: { user: User.find_by(user_id: post.user_id), text: text, followed: followed } %>">
+            <div class="bodyTweets-userIcon popover-user-details" data-user-id="<%= User.find_by(user_id: post.user_id).id %>" data-toggle="popover" data-placement="bottom" data-content="<%= render partial: 'user_popover', locals: { user: User.find_by(user_id: post.user_id), text: text, followed: followed } %>">
               <% if user.profil_img %>
                 <%= image_tag "/images/profil_images/#{user.user_id}.jpg" %>
               <% else %>

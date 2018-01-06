@@ -42,15 +42,16 @@ class UsersController < ApplicationController
      def update
          user_id = params[:user][:user_id]
          password = params[:user][:password]
-         img = params[:user][:img]
          @user = User.find_by(user_id: session[:user_id])
          
          @user.user_id = user_id
          @user.password = password if password != nil
          
          if @user.save
-            if img != nil
-                File.binwrite("public/images/profil_images/#{@user.user_id}.jpg", img.read)
+            if params[:user][:img] != nil
+                img = MiniMagick::Image.read(params[:user][:img])
+                img.resize "300x300"
+                img.write "public/images/profil_images/#{@user.user_id}.jpg"
                 @user.profil_img = true
                 @user.save
             end

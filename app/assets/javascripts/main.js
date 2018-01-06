@@ -9,6 +9,7 @@ $(document).on('turbolinks:load', function() {
 	let postImg
 	let userName
 	let userImg
+	let popover_user = []
 	
 	
     $(".home").on('click', function() {
@@ -66,27 +67,6 @@ $(document).on('turbolinks:load', function() {
     $(".tweet-message").on("click", function(e) {
     	alert("test");
     	e.stopPropagation();
-    });
-    
-    $(document).on("click", ".follow-btn", function(e) {
-    	e.stopPropagation();
-    	$(this).toggleClass('followed');
-    	if ($(this).attr("class") == "followed") {
-    		$(this).attr("value", "アンフォロー");
-    	}else {
-    		$(this).attr("value", "フォロー");
-    	}
-    	let user = $(this).attr("data-user")
-    	$.ajax({
-    		url: "/users/follow", 
-    		method: "POST", 
-    		cache: false,
-    		data: {userId: user},
-    		error:function() {
-        		//取得失敗時に実行する処理
-        		console.log("何らかの理由で失敗しました");
-    		}
-    	});
     });
     
     $(".body-tweets").on('click', function (e) {
@@ -195,6 +175,36 @@ $(document).on('turbolinks:load', function() {
 		trigger: 'manual',
 		html: true
 	});
+	
+    $(document).on("click", ".follow-btn", function(e) {
+    	let user = $(this).attr("data-user")
+    	$(this).toggleClass('followed');
+    	if ($(this).attr("class") == "follow-btn followed") {
+    		$(this).attr("value", "アンフォロー");
+    	}else {
+    		$(this).attr("value", "フォロー");
+    	}
+    	
+    	if ($.inArray(user, popover_user) !== -1) {
+    			popover_user.some(function(v, i){
+    				if (v==user) popover_user.splice(i,1);    
+				});
+    		}else {
+				popover_user.push(user);
+    		}
+    	
+    	$.ajax({
+    		url: "/users/follow", 
+    		method: "POST", 
+    		cache: false,
+    		data: {userId: user},
+    		error:function() {
+        		//取得失敗時に実行する処理
+        		console.log("何らかの理由で失敗しました");
+    		}
+    	});
+    });
+	
 	$(document).on('mouseenter', '.popover-user-details, .popover-content', function() {
 		clearTimeout(hoge);
 		if (popover_show == true) {
@@ -204,6 +214,16 @@ $(document).on('turbolinks:load', function() {
 		hoge = setTimeout(function() {			
 			popover_show = true;
 			element.popover('show');
+			const user = element.attr("data-user-id");
+			if ($.inArray(user, popover_user) !== -1) {
+				const follow_btn = $(document).find(".follow-btn")
+				follow_btn.toggleClass("followed");
+				if (follow_btn.attr("value") == "フォロー") {
+					follow_btn.attr("value", "アンフォロー");
+				}else {
+					follow_btn.attr("value", "フォロー");
+				}
+			}
 		}, 500); 
 	});
 	
