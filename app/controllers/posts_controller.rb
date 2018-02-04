@@ -16,6 +16,28 @@ class PostsController < ApplicationController
     end
   end
   
+  def search
+    @posts = Post.all
+    @users = User.all
+    @user = User.find_by(user_id: session[:user_id])
+    @follower = Follow.where(follower: @user.id)
+    @followed = Follow.where(followed: @user.id)
+    @follower_id = []
+    @follower.each do |u|
+      @follower_id.push(User.find(u.followed).user_id)
+    end
+    
+    @user_searched = params[:user_searched]
+    @users_result = []
+    @users.each do |user|
+      if user.name == @user_searched || user.user_id == @user_searched
+       if !@users_result.include?(user)
+         @users_result.push(user)
+       end
+      end
+    end
+  end
+  
   def newTweet
     content = params[:content]
     if params[:img]

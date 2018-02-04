@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   
   get "posts/user_details"
-  get 'posts/index'
+  get "posts/index"
+  get "posts/search"
   
   get '' => 'users#home'
   

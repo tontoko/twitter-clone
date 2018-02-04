@@ -22,9 +22,11 @@
         </div>
         <div class="header-right">
             <div class="search-form">
-                <input class="search-text" type="text" name="" placeholder="キーワード検索">
+              <%= form_tag("/posts/search", method: "get") do %>
+                <input class="search-text" type="text" name="user_searched" placeholder="ユーザー検索">
                 <span class="fa fa-search"></span>
-                <input class="search-submit" type="submit" name="" value="">
+                <input class="search-submit" type="submit" value="">
+              <% end %>
             </div>
             <div class="btn-group">
               <div class="header-userIcon btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">

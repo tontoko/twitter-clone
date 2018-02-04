@@ -1,0 +1,72 @@
+<div class="body">
+<div class="container">
+
+<div class="body-left">
+          <div class="body-userInfo-wrapper">
+            <div class="body-userInfo-top">
+              <div class="bodyLeft-userIcon">
+              <% if @user.profil_img %>
+              <%= image_tag "/images/profil_images/#{session[:user_id]}.jpg" %>
+              <% else %>
+              <%= image_tag '/images/profil_images/default.jpg' %>
+              <% end %>
+              </div>
+            </div>
+            <div class="body-userInfo-bottom">
+              <div class="body-userName-wrapper">
+              <div class="body-userNameUserId">
+                <p class="body-userName"><%= @user.name %></p>
+              </br>
+                <p class="body-userId">@<%= @user.user_id %></p>
+              </div>
+              </div>
+              <div class="body-userInfo">
+                <div class="body-tweetsMyself">
+                  <p class="userInfo-top">ツイート</p>
+                  <p class="userInfo-bottom"><%= Post.where(user_id: @user.user_id).length %></p>
+                </div>
+                <div class="body-followsMyself">
+                  <p class="userInfo-top">フォロー</p>
+                  <p class="userInfo-bottom"><%= @follower.length %></p>
+                </div>
+                <div class="body-followersMyself">
+                  <p class="userInfo-top">フォロワー</p>
+                  <p class="userInfo-bottom"><%= @followed.length %></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+<div class="body-center">
+<% @users_result.each do |user| %>
+    <div class="searched-result">
+        <div class="bodyTweets-userIcon">
+            <% if user.profil_img %>
+                <%= image_tag "/images/profil_images/#{user.user_id}.jpg" %>
+            <% else %>
+                <%= image_tag '/images/profil_images/default.jpg' %>
+            <% end %>
+        </div>
+        <div class="bodyTweets-contents">
+            <p class="searched-user-name"><%= user.name %> </p>
+            <p class="searched-user-id"><%= user.user_id %></p>
+        </div>
+        <% unless user.id == @user.id %>
+            <% unless Follow.where(follower: @user.id).find_by(followed: user.id).blank? %>
+                <% text = 'アンフォロー' %>
+                <% followed = true %>
+            <% else %>
+                <% text = 'フォロー' %>
+                <% followed = false %>
+            <% end %> 
+            <input type='submit' class='follow-btn <%= 'followed' if followed == true %>' data-user='<%= user.id %>' value='<%= text %>'></input>
+        <% end %>
+        <div class="clear"></div>
+    </div>
+<% end %>
+
+</div>
+
+</div>
+</div>

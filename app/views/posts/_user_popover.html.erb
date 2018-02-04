@@ -16,7 +16,9 @@
         <p class='body-userId'>@<%= user.user_id %></p>
       </div>
       <div>
-        <input type='submit' class='follow-btn <%= 'followed' if followed == true %>' data-user='<%= user.id %>' value='<%= text %>'></input>
+        <% unless user.id == @user.id %>
+          <input type='submit' class='follow-btn <%= 'followed' if followed == true %>' data-user='<%= user.id %>' value='<%= text %>'></input>
+        <% end %>
       </div>
     </div>
     <div class='body-userInfo'>
@@ -34,4 +36,4 @@
       </div>
     </div>
   </div>
-</div>  
+</div>

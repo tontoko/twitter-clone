@@ -167,9 +167,7 @@ $(document).on('turbolinks:load', function() {
 		$('input[type="file"]').val('');
 	});
 	
-	let hoge
-	let popover_show
-	let element
+
 
 	$('.popover-user-details').popover({
 		trigger: 'manual',
@@ -177,12 +175,12 @@ $(document).on('turbolinks:load', function() {
 	});
 	
     $(document).on("click", ".follow-btn", function(e) {
-    	let user = $(this).attr("data-user")
+    	let user = $(this).attr("data-user");
     	$(this).toggleClass('followed');
-    	if ($(this).attr("class") == "follow-btn followed") {
-    		$(this).attr("value", "アンフォロー");
-    	}else {
+    	if ($(this).attr("value") == "アンフォロー") {
     		$(this).attr("value", "フォロー");
+    	}else {
+    		$(this).attr("value", "アンフォロー");
     	}
     	
     	if ($.inArray(user, popover_user) !== -1) {
@@ -205,16 +203,24 @@ $(document).on('turbolinks:load', function() {
     	});
     });
 	
+	let popover_timeout = {};
+	let popover_show = {};
+	let element = {};
+	
 	$(document).on('mouseenter', '.popover-user-details, .popover-content', function() {
-		clearTimeout(hoge);
-		if (popover_show == true) {
+		let postId = $(this).parents(".body-tweets").attr("data-post-id")
+		if (popover_timeout[postId]) {
+			clearTimeout(popover_timeout[postId]);
+			delete popover_timeout[postId];
+		}
+		if (popover_show[postId] == true) {
 			return false
 		}
-		element = $(this)
-		hoge = setTimeout(function() {			
-			popover_show = true;
-			element.popover('show');
-			const user = element.attr("data-user-id");
+		element[postId] = $(this)
+		popover_timeout[postId] = setTimeout(function() {			
+			popover_show[postId] = true;
+			element[postId].popover('show');
+			const user = element[postId].attr("data-user-id");
 			if ($.inArray(user, popover_user) !== -1) {
 				const follow_btn = $(document).find(".follow-btn")
 				follow_btn.toggleClass("followed");
@@ -228,10 +234,14 @@ $(document).on('turbolinks:load', function() {
 	});
 	
 	$(document).on('mouseleave', '.popover-user-details, .popover-content', function() {
-		clearTimeout(hoge);
-		hoge = setTimeout(function() {
-			popover_show = false;
-			element.popover('hide');
+		let postId = $(this).parents(".body-tweets").attr("data-post-id")
+		if (popover_timeout[postId]) {
+			clearTimeout(popover_timeout[postId]);
+			delete popover_timeout[postId];
+		}
+		popover_timeout[postId] = setTimeout(function() {
+			popover_show[postId] = false;
+			element[postId].popover('hide');
 		}, 500);
 	});
 

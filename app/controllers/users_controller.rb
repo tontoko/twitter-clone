@@ -40,11 +40,11 @@ class UsersController < ApplicationController
      end
      
      def update
-         user_id = params[:user][:user_id]
+         user_name = params[:user][:user_name]
          password = params[:user][:password]
          @user = User.find_by(user_id: session[:user_id])
          
-         @user.user_id = user_id
+         @user.name = user_name
          @user.password = password if password != nil
          
          if @user.save
@@ -56,7 +56,6 @@ class UsersController < ApplicationController
                 @user.save
             end
             
-            session[:user_id] = @user.user_id
             flash[:notice] = "ユーザー情報の更新に成功しました！"
             redirect_to posts_user_details_path
          else

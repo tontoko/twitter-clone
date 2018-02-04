@@ -82,13 +82,18 @@
 
 .follow-btn {
   display: inline-block;
-  padding: 6px 16px;
+  padding: 6px 12px;
   background: #1da1f2;
   border: 1px solid #1da1f2;
   border-radius: 30px;
   opacity: 0.8;
   color: white;
-  margin: 15px 10px;
+  margin: 15px 8px;
+}
+
+.followed {
+  padding: 6px 4px !important;
+  margin: 15px 3px;
 }
 
 .body-userInfo {
@@ -361,8 +366,28 @@
   display: block;
 }
 
-
-
 }
+
+//-----------------------------------------------------------------------------------
+
+.searched-result {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background: white;
+  border-bottom: 1px solid #e6ecf0;
+}
+
+.searched-user-name {
+  font-weight: bold;
+  font-size: 22px;
+}
+
+.searched-result .follow-btn {
+  float: right;
+  margin-right: +24px;
+}
+
+
+
 
 }

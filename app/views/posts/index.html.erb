@@ -63,7 +63,14 @@
           
           <% @posts.each do |post| %>
           
-          <% next if @follower_id.include?(post.user_id) == false && post.user_id != @user.user_id %>
+          <% retweeted = false %>
+          <% @follower.each do |follower| %>
+            <% if Retweet.where(user: follower.followed).find_by(post: post.id) %>
+              <% retweeted = true if Retweet.where(user: follower.followed).find_by(post: post.id) %>
+              <% break %>
+            <% end %>
+          <% end %>
+          <% next if @follower_id.include?(post.user_id) == false && post.user_id != @user.user_id && retweeted != true %>
           
           <% time = ((Time.now - Time.parse(post.updated_at.to_s)) / (24 * 60)).floor
                 if time >= 24
